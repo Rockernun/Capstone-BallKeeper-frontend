@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import ReservationManagementTab, { TabButton } from './ReservationManagementTab';
 import ItemManagementTab from './ItemManagementTab';
 import UserManagementTab from './UserManagementTab';
+import { DashboardTab } from './DashboardTab';
 
-type AdminTab = 'reservations' | 'items' | 'users';
+type AdminTab = 'dashboard' | 'reservations' | 'items' | 'users';
 
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState<AdminTab>('reservations');
+  const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
 
   return (
     <div className="min-h-screen bg-gray-100 p-8 font-sans">
@@ -23,6 +24,12 @@ export default function AdminPage() {
           
           {/* --- 메인 탭 네비게이션 --- */}
           <div className="flex border-b border-gray-300 mb-4">
+            <TabButton
+              label="대시보드" 
+              tabName="dashboard" 
+              activeTab={activeTab} 
+              onClick={setActiveTab} 
+            />
             <TabButton 
               label="예약 관리" 
               tabName="reservations" 
@@ -44,6 +51,9 @@ export default function AdminPage() {
           </div>
 
           {/* --- 탭 컨텐츠 렌더링 --- */}
+          {activeTab === 'dashboard' && (
+            <DashboardTab />
+          )}
           {activeTab === 'reservations' && (
             <ReservationManagementTab />
           )}
