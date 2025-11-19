@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ReservationManagementTab, TabButton } from './ReservationManagementTab';
-import { ItemManagementTab } from './ItemManagementTab';
+import ReservationManagementTab, { TabButton } from './ReservationManagementTab';
+import ItemManagementTab from './ItemManagementTab';
+import UserManagementTab from './UserManagementTab';
 
-type AdminTab = 'reservations' | 'items';
+type AdminTab = 'reservations' | 'items' | 'users';
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>('reservations');
@@ -34,6 +35,12 @@ export default function AdminPage() {
               activeTab={activeTab} 
               onClick={setActiveTab} 
             />
+            <TabButton
+              label="사용자 관리" 
+              tabName="users" 
+              activeTab={activeTab} 
+              onClick={setActiveTab} 
+            />
           </div>
 
           {/* --- 탭 컨텐츠 렌더링 --- */}
@@ -42,6 +49,9 @@ export default function AdminPage() {
           )}
           {activeTab === 'items' && (
             <ItemManagementTab />
+          )}
+          {activeTab === 'users' && (
+            <UserManagementTab />
           )}
           
         </div>

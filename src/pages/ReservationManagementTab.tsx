@@ -211,3 +211,6 @@ export function ReservationManagementTab() {
     </>
   );
 }
+
+// 기본(default) 내보내기: 편리한 import를 위해 추가
+export default ReservationManagementTab;

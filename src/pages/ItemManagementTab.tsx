@@ -198,3 +198,6 @@ export function ItemManagementTab() {
     </>
   );
 }
+
+// 기본(default) 내보내기: 편의상 default export도 추가
+export default ItemManagementTab;
