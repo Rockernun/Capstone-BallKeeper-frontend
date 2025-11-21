@@ -4,13 +4,18 @@ import AuthCallbackPage from './pages/AuthCallbackPage';
 import LoginPage from './pages/LoginPage';
 import ChatPage from './pages/ChatPage';
 import AdminPage from './pages/AdminPage';
+import { Toaster } from 'react-hot-toast';
+import useNotification from './hooks/useNotification';
 
 function App() {
   const user = useAuthStore((state) => state.user);
   const isAdmin = useAuthStore((state) => state.isAdmin);
 
+  useNotification();
+
   return (
     <BrowserRouter>
+    <Toaster position="top-right" />
       <Routes>
         {/* 로그인한 사용자는 챗봇 페이지로, 아니면 로그인 페이지로 */}
         <Route
