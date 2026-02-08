@@ -211,3 +211,5 @@ export function ReservationManagementTab() {
     </>
   );
 }
+
+export default ReservationManagementTab;

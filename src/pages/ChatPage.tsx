@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '../store/authStore';
 import apiClient from '../api/client';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { ItemCalendarModal } from '../components/ItemCalendarModal';
+import { Modal } from '../components/Modal';
 
 type Message = {
   id: number;
@@ -60,6 +62,11 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
+  const [items, setItems] = useState<any[]>([]);
+  
+  const [calendarTarget, setCalendarTarget] = useState<{id: number, name: string} | null>(null);
 
   // 환영 메시지 설정
   useEffect(() => {
@@ -106,6 +113,16 @@ export default function ChatPage() {
     }
   };
 
+  const handleOpenItemList = async () => {
+    setIsListModalOpen(true);
+    try {
+      const data = await apiClient.get('/api/items'); // 기존 활성 물품 조회 API
+      setItems(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   if (!user) {
     return <Navigate to="/login" />;
   }
@@ -120,6 +137,12 @@ export default function ChatPage() {
             <h1 className="text-xl font-bold text-gray-800">BallKeeper AI</h1>
         </div>
         <div className="flex items-center gap-4">
+          <button 
+              onClick={handleOpenItemList}
+              className="text-sm bg-white border border-gray-300 text-gray-700 py-1 px-3 rounded-full hover:bg-gray-50 transition shadow-sm"
+            >
+              📅 예약 현황 확인
+            </button>
             <span className="text-sm text-gray-600 hidden sm:block">환영합니다, {user.name}님!</span>
             {isAdmin() && (
               <Link to="/admin" className="text-sm text-green-600 hover:text-green-800 font-semibold">
@@ -170,6 +193,37 @@ export default function ChatPage() {
           </form>
         </div>
       </footer>
+      {/* 1. 물품 목록 모달 */}
+          <Modal 
+            isOpen={isListModalOpen} 
+            onClose={() => setIsListModalOpen(false)} 
+            title="예약 가능 물품 목록"
+          >
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {items.map((item: any) => (
+                <div key={item.id} className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50">
+                  <div>
+                    <div className="font-bold">{item.name}</div>
+                    <div className="text-xs text-gray-500">{item.description}</div>
+                  </div>
+                  <button
+                    onClick={() => setCalendarTarget({ id: item.id, name: item.name })}
+                    className="text-xs bg-indigo-100 text-indigo-700 py-1 px-2 rounded hover:bg-indigo-200"
+                  >
+                    달력 보기
+                  </button>
+                </div>
+              ))}
+            </div>
+          </Modal>
+    
+          {/* 2. 캘린더 모달 */}
+          <ItemCalendarModal
+            isOpen={!!calendarTarget}
+            onClose={() => setCalendarTarget(null)}
+            itemId={calendarTarget?.id || null}
+            itemName={calendarTarget?.name || ''}
+          />
     </div>
   );
 }
